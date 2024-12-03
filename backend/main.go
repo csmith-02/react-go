@@ -109,7 +109,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(fmt.Sprintf(`{"token":"%s","fullName":"%s","email":"%s"}`, tokenString, user.FullName, user.Email)))
+		w.Write([]byte(fmt.Sprintf(`{"token":"%s"}`, tokenString)))
 		return
 	} else {
 		w.WriteHeader(http.StatusUnauthorized)

@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import axios, { AxiosError } from "axios";
-import { validateJWT, User } from "../utils/jwt";
+import { validateJWT, User, DecodedJWT } from "../utils/jwt";
 
 const AuthContext = createContext<UserContext | null>(null)
 
@@ -60,8 +60,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode}) => {
                 }
             });
 
-            localStorage.setItem('token', response.data.token);
-            setUser({email: response.data.email, fullName: response.data.fullName});
+            const token = response.data.token;
+
+            const valid = validateJWT(token)
+
+            if (valid) {
+                localStorage.setItem('token', token);
+                setUser({ fullName: valid.fullName, email: valid.email });
+            }
+
 
         } catch(err: unknown) {
             const error = err as AxiosError<string, unknown>;
